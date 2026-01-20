@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>BONEVERSE</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: black;
+}
+
+/* FUNDO ANIMADO */
+.background {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 20%, #5d00ff69, transparent 40%),
+        radial-gradient(circle at 80% 30%, #00ffd579, transparent 40%),
+        radial-gradient(circle at 50% 80%, #ff008c68, transparent 40%),
+        radial-gradient(circle at 70% 70%, #ffd0005e, transparent 40%);
+    animation: moveBackground 20s ease-in-out infinite alternate;
+    filter: blur(20px);
+    transform: scale(1.2);
+}
+
+@keyframes moveBackground {
+    0% {
+        background-position:
+            0% 0%,
+            100% 0%,
+            50% 100%,
+            100% 100%;
+    }
+    100% {
+        background-position:
+            100% 100%,
+            0% 100%,
+            50% 0%,
+            0% 0%;
+    }
+}
+
+/* OVERLAY ESCURO */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* CONTEÚDO */
+.container {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* TEXTO ARCO-ÍRIS */
+.title {
+    font-size: 4.5rem;
+    font-weight: 800;
+    background: linear-gradient(
+        270deg,
+        red,
+        orange,
+        yellow,
+        green,
+        cyan,
+        blue,
+        violet,
+        red
+    );
+    background-size: 1600% 1600%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 12s ease infinite;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.subtitle {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: white;
+}
+
+/* MENU */
+.menu {
+    margin-top: 30px;
+    display: flex;
+    gap: 25px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.1rem;
+    padding: 10px 22px;
+    border: 1px solid white;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.menu a:hover {
+    background: white;
+    color: black;
+}
+
+/* ===================== */
+/* RESPONSIVO – CELULAR */
+/* ===================== */
+@media (max-width: 768px) {
+
+    .title {
+        font-size: 3rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .menu {
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .menu a {
+        width: 200px;
+        padding: 14px 0;
+        font-size: 1.1rem;
+    }
+
+    .background {
+        filter: blur(30px);
+        animation-duration: 30s;
+    }
+
+    .overlay {
+        background: rgba(0, 0, 0, 0.65);
+    }
+}
+
+/* CELULARES MUITO PEQUENOS */
+@media (max-width: 400px) {
+    .title {
+        font-size: 2.5rem;
+    }
+}
+
+</style>
+</head>
+
+<body>
+<div class="background"></div>
+<div class="overlay"></div>
+
+<div class="container">
+    <div class="title">BONEVERSE</div>
+    <div class="subtitle">seletor de fichas</div>
+
+    <div class="menu">
+        <a href="Manoel.html">Manoel</a>
+        <a href="klowen.html">Klowen</a>
+        <a href="tony.html">Tony</a>
+    </div>
+</div>
+</body>
+</html>

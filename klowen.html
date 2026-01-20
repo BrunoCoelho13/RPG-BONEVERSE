@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klowen – BONEVERSE</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================= RESET ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: black;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* ================= FUNDO ================= */
+        .background {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 25% 30%, rgba(140, 90, 255, 0.35), transparent 55%),
+                radial-gradient(circle at 75% 35%, rgba(120, 220, 200, 0.28), transparent 60%),
+                radial-gradient(circle at 50% 75%, rgba(255, 140, 200, 0.25), transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(255, 220, 160, 0.22), transparent 65%);
+            filter: blur(50px);
+            animation: smoke 60s linear infinite;
+            transform: scale(1.4);
+            z-index: -2;
+        }
+
+        @keyframes smoke {
+            from {
+                background-position: 20% 30%, 80% 40%, 50% 80%, 90% 70%;
+            }
+
+            to {
+                background-position: 55% 20%, 60% 70%, 35% 50%, 65% 30%;
+            }
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        /* ================= ENTRADA ================= */
+        .fade-in {
+            animation: pageEnter 1.4s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes pageEnter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================= LAYOUT ================= */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 60px 20px;
+        }
+
+        /* ================= CARD ================= */
+        .card {
+            display: flex;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card img {
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ================= NOME ================= */
+        .nome {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(270deg, #ff2a2a, #ff8c00, #ff2a2a);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fireGradient 6s ease infinite;
+        }
+
+        @keyframes fireGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .card-content p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #eaeaea;
+        }
+
+        /* ================= FICHA ================= */
+        .ficha {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            border-radius: 25px;
+            padding: 35px;
+        }
+
+        .bloco {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+        }
+
+        .bloco h3 {
+            color: #ff7a3c;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            padding: 6px 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ================= GRID ================= */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        /* ================= DADO (IMAGEM) ================= */
+        .dice {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .dice img {
+            width: 22px;
+            height: 22px;
+            opacity: 0.85;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .dice:hover img {
+            transform: rotate(25deg) scale(1.15);
+            opacity: 1;
+        }
+
+        /* ================= ROLL OVERLAY ================= */
+        .roll-overlay {
+            position: fixed;
+            inset: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            background: rgba(0, 0, 0, 0.85);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+
+            z-index: 2147483647;
+            /* força absoluta */
+        }
+
+
+        .roll-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .roll-result {
+            font-size: 6rem;
+            font-weight: 800;
+            background: linear-gradient(270deg,
+                    red, orange, yellow, green, cyan, blue, violet, red);
+            background-size: 800% 800%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowRoll 3s ease infinite;
+        }
+
+        @keyframes rainbowRoll {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* ================= DADO SELVAGEM ================= */
+        .dado-selvagem {
+            margin-top: 10px;
+            padding: 14px 18px;
+            background: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.08),
+                    rgba(255, 255, 255, 0.03));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .dado-selvagem-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+
+            background: linear-gradient(270deg,
+                    red, orange, yellow, green, cyan, blue, violet, red);
+            background-size: 800% 800%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowTitle 6s linear infinite;
+        }
+
+        @keyframes rainbowTitle {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* leve destaque no hover */
+        .dado-selvagem:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ================= EXPLOSÃO DE DADO ================= */
+        .roll-result.exploded {
+            text-shadow:
+                0 0 8px rgba(255, 255, 255, 0.6),
+                0 0 18px rgba(255, 200, 120, 0.6),
+                0 0 32px rgba(255, 120, 60, 0.5);
+            animation: rainbowRoll 3s ease infinite, pulseGlow 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.08);
+            }
+        }
+
+        .exploded-text {
+            margin-top: 10px;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+
+            background: linear-gradient(270deg,
+                    red, orange, yellow, green, cyan, blue, violet, red);
+            background-size: 800% 800%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            opacity: 0;
+            animation: explodeText 0.6s ease forwards;
+        }
+
+        @keyframes explodeText {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================= DOWNLOAD PDF ================= */
+        .download-area {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(270deg,
+                    red,
+                    orange,
+                    yellow,
+                    green,
+                    cyan,
+                    blue,
+                    violet,
+                    red);
+            background-size: 800% 800%;
+            animation: rainbowDownload 8s ease infinite;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes rainbowDownload {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 768px) {
+
+            body {
+                font-size: 15px;
+            }
+
+            .container {
+                padding: 30px 16px;
+            }
+
+            /* CARD DO PERSONAGEM */
+            .card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 20px;
+                padding: 22px;
+                border-radius: 22px;
+            }
+
+            .card img {
+                width: 160px;
+                height: 160px;
+                border-radius: 18px;
+            }
+
+            .card-content p {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            /* NOME */
+            .nome {
+                font-size: 2.1rem;
+                margin-bottom: 10px;
+            }
+
+            /* FICHA */
+            .ficha {
+                padding: 22px;
+                border-radius: 22px;
+            }
+
+            /* BLOCOS */
+            .bloco {
+                padding: 18px;
+                border-radius: 18px;
+                margin-bottom: 22px;
+            }
+
+            .bloco h3 {
+                font-size: 1.05rem;
+                margin-bottom: 12px;
+            }
+
+            /* GRID MAIS FLUIDO */
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            /* LISTAS */
+            li {
+                font-size: 0.9rem;
+                padding: 5px 0;
+                justify-content: space-between;
+            }
+
+            /* DADOS */
+            .dice img {
+                width: 20px;
+                height: 20px;
+            }
+
+            /* OVERLAY DO DADO */
+            .roll-result {
+                font-size: 4rem;
+            }
+
+            .exploded-text {
+                font-size: 1.1rem;
+                margin-top: 10px;
+            }
+
+            .download-btn {
+                width: 100%;
+                max-width: 320px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background"></div>
+    <div class="overlay"></div>
+
+    <div class="container fade-in">
+
+        <div class="card">
+            <img src="klowen.jpg" alt="Klowen">
+            <div class="card-content">
+                <div class="nome">Klowen Vatti</div>
+                <p>
+                    Klowen é um burocrata da nação de Talon, ele nunca teve muita ambição e sempre acreditou que viveria
+                    em
+                    mais do mesmo, porem tudo mudou quando conheceu Tony e Manoel. após ser traído pelo Bispo Dourado
+                    agora luta para libertar seu povo e mudar o destino do mundo.
+                </p>
+            </div>
+        </div>
+
+        <div class="ficha">
+
+            <div class="bloco grid">
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Atributos</h3>
+                        <ul>
+                            <li>Força <span class="dice" data-dice="6">1d6 <img src="Dice.png"></span></li>
+                            <li>Agilidade <span class="dice" data-dice="4">1d4 <img src="Dice.png"></span></li>
+                            <li>Vigor <span class="dice" data-dice="6">1d6 <img src="Dice.png"></span></li>
+                            <li>Astúcia <span class="dice" data-dice="8">1d8 <img src="Dice.png"></span></li>
+                            <li>Espírito <span class="dice" data-dice="12">1d12 <img src="Dice.png"></span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Perícias</h3>
+                        <ul>
+                            <li>Atletismo <span class="dice" data-dice="4">1d4 <img src="Dice.png"></span></li>
+                            <li>Conhecimento Geral <span class="dice" data-dice="6">1d6 <img src="Dice.png"></span></li>
+                            <li>Furtividade <span class="dice" data-dice="4">1d4 <img src="Dice.png"></span></li>
+                            <li>Perceber <span class="dice" data-dice="8">1d8 <img src="Dice.png"></span></li>
+                            <li>Persuadir <span class="dice" data-dice="12">1d12 <img src="Dice.png"></span></li>
+                            <li>Conhecimento Academico <span class="dice" data-dice="6">1d6 <img src="Dice.png"></span>
+                            </li>
+                            <li>Lutar <span class="dice" data-dice="10">1d10 <img src="Dice.png"></span></li>
+                            <li>Intimidação <span class="dice" data-dice="6">1d6 <img src="Dice.png"></span></li>
+                            <li>Pesquisa <span class="dice" data-dice="8">1d8 <img src="Dice.png"></span></li>
+                            <li>Curar <span class="dice" data-dice="6">1d6 <img src="Dice.png"></span></li>
+                            <li>Ocultismo <span class="dice" data-dice="6">1d6 <img src="Dice.png"></span></li>
+
+                            <li class="dado-selvagem">
+                                <span class="dado-selvagem-title">Dado Selvagem</span>
+                                <span class="dice" data-dice="6">1d6 <img src="Dice.png"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bloco grid">
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Complicações</h3>
+                        <ul>
+                            <li>Hábito: Café</li>
+                            <li>Obrigação: Com seu povo</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Vantagens</h3>
+                        <ul>
+                            <li>Ameaçador +2 Intimidação</li>
+                            <li>Atraente +1 Performace e Persuadir</li>
+                            <li>Curandeiro +2 em Cura</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bloco grid">
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Armaduras</h3>
+                        <ul>
+                            <li>Tronco: Jaqueta</li>
+                            <li>Cabeça: Elmo de Bronze</li>
+                            <li>Braço D: Jaqueta</li>
+                            <li>Braço E: Jaqueta</li>
+                            <li>Perna D: Calça</li>
+                            <li>Perna E: Calça</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Status</h3>
+                        <ul>
+                            <li>Aparar: 7</li>
+                            <li>Resistencia: 11</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bloco grid">
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Armas</h3>
+                        <ul>
+                            <li>Guarda-Chuva <span class="dice" data-dice="6">1d6 <img src="Dice.png"></span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Poderes</h3>
+                        <ul>
+                            <li>PP:10</li>
+                            <li>Logica 2PP: Descobre automaticamente mentiras </li>
+                            <li>Burocracia 5PP: Deixa o inimigo um turno sem atacar </li>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bloco grid">
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Dinheiro</h3>
+                        <ul>
+                            <li>Ouros: 66</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bloco grid">
+                    <div>
+                        <h3>Inventário</h3>
+                        <ul>
+                            <li>Guarda Chuva: 0.5</li>
+                            <li>Calça: 2</li>
+                            <li>Jaqueta: 2.5</li>
+                            <li>Livro Medico: 1</li>
+                            <li>Elmo de Bronze: 3</li>
+                            <li></li>
+                            <li>Total: 9</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="download-area">
+                <a href="FICHA LEGAL DO KLOWEN LEGAL.pdf" download class="download-btn">
+                    📄 Baixar ficha em PDF
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="roll-overlay" id="rollOverlay">
+        <div style="text-align:center;">
+            <div class="roll-result" id="rollResult">20</div>
+            <div class="exploded-text" id="explodedText">EXPLODIU</div>
+        </div>
+    </div>
+
+    <audio id="explosionSound" src="Explosion.mp3" preload="auto"></audio>
+
+    <script>
+        const dice = document.querySelectorAll(".dice");
+        const overlay = document.getElementById("rollOverlay");
+        const result = document.getElementById("rollResult");
+        const explodedText = document.getElementById("explodedText");
+
+        dice.forEach(d => {
+            d.addEventListener("click", () => {
+                const max = parseInt(d.dataset.dice);
+                const roll = Math.floor(Math.random() * max) + 1;
+
+                // reset visual
+                result.classList.remove("exploded");
+                explodedText.style.display = "none";
+
+                result.textContent = roll;
+                overlay.classList.add("active");
+                document.body.style.overflow = "hidden";
+
+                // EXPLOSÃO
+                if (roll === max) {
+                    result.classList.add("exploded");
+                    explodedText.style.display = "block";
+                    explosionSound.currentTime = 0;
+                    explosionSound.play();
+                }
+
+                setTimeout(() => {
+                    overlay.classList.remove("active");
+                    document.body.style.overflow = "";
+                    result.classList.remove("exploded");
+                    explodedText.style.display = "none";
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+
+</html>
